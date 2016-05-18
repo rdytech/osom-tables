@@ -21,13 +21,7 @@
   });
 
   $(document).on('click', '.osom-table table th.mark > input[type="checkbox"]', function() {
-    $(this).closest('table').find('td.mark > input[type="checkbox"]').each((function(_this) {
-      return function(i, box) {
-        box.checked = _this.checked;
-        return true;
-      };
-    })(this));
-    return save_checkboxes($(this).closest('.osom-table'));
+    mark_an_item_as_checked();
   });
 
   $(document).on('click', '.osom-table table td.mark > input[type="checkbox"]', function() {
@@ -83,6 +77,16 @@
     });
   }
 
+  function mark_an_item_as_checked(){
+    $(this).closest('table').find('td.mark > input[type="checkbox"]').each((function(_this) {
+      return function(i, box) {
+        box.checked = _this.checked;
+        return true;
+      };
+    })(this));
+    return store_checked_ids_in_data_attribute($(this).closest('.osom-table'));
+  }
+
   // Public Functions
   // ==========================================================================
 
@@ -101,7 +105,7 @@
       cache: false,
       success: function(new_content) {
         table_load_success(container, new_content, url)
-        restore_checkboxes(container);
+        load_checkbox_state_for_page(container);
       },
       complete: function() {
         container.removeClass('loading');
@@ -158,7 +162,7 @@
     }
   }
 
-  function save_checkboxes(container) {
+  function store_checked_ids_in_data_attribute(container) {
     var checked_ids;
     checked_ids = (container.data('checked') || '').split(',');
     container.find('td.mark input[type="checkbox"]').each(function() {
@@ -175,7 +179,7 @@
     return container.data('checked', checked_ids.join(',').replace(/^,/, ''));
   };
 
-  function restore_checkboxes(container) {
+  function load_checkbox_state_for_page(container) {
     var checked_ids;
     checked_ids = (container.data('checked') || '').split(',');
     return container.find('td.mark input[type="checkbox"]').each(function() {
