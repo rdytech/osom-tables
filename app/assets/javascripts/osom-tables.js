@@ -20,7 +20,7 @@
     order_table(this);
   });
 
-  $(document).on('click', '.osom-table table th.mark > input[type="checkbox"]', mark_an_item_as_checked;
+  $(document).on('click', '.osom-table table th.mark > input[type="checkbox"]', mark_an_item_as_checked);
 
   $(document).on('click', '.osom-table table td.mark > input[type="checkbox"]', function() {
     return save_checkboxes($(this).closest('.osom-table'));
