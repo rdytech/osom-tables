@@ -15,7 +15,7 @@ module OsomTables::Helper
     show_checkbox   = options[:show_checkbox] || false
     options.delete(:show_checkbox) if options[:show_checkbox]
 
-    url      = url.gsub(/(\?|&)osom_tables_cache_killa=[^&]*?/, '')
+    url = url.gsub(/(\?|&)osom_tables_cache_killa=[^&]*?/, '')
 
     # Allow the table to be loaded asynchronously
     if options[:async]
@@ -97,7 +97,9 @@ module OsomTables::Helper
         head_row.gsub! m[0], "<th#{m[1]} class='#{css}' data-#{m[2]}#{m[5]}>"
       end
 
-      @context.content_tag :thead, head_row.html_safe
+      splited_head_row = head_row.partition(/<tr.*?>/)
+      splited_head_row.insert(2, @show_checkbox ? "<th class='mark'><input type='checkbox'/></th>\n" : '')
+      @context.content_tag :thead, splited_head_row.join.html_safe
     end
 
     def body(&block)
@@ -105,13 +107,17 @@ module OsomTables::Helper
         @items.map do |item|
           inner, has_tr = capture_tr { yield item }
 
-          if has_tr
+          row = if has_tr
             inner
           elsif defined?(ActiveRecord) && item.is_a?(ActiveRecord::Base)
             @context.content_tag_for(:tr, item){ inner }
           else
             @context.content_tag(:tr){ inner }
           end
+
+          splited_row = row.partition(/<tr.*?>/)
+          splited_row.insert(2, @show_checkbox ? "<td class='mark'><input type='checkbox' data-item-id='#{item.id}'/></td>\n" : '')
+          splited_row.join
         end.join("\n").html_safe
       end
     end
@@ -129,12 +135,12 @@ module OsomTables::Helper
     end
 
     private
+
     def capture_tr(&block)
       inner = @context.capture do
         yield
       end
 
-      inner.unshift "<td class='mark'><input type='checkbox' data-item-id='#{item.id}'/></td>\n" if @show_checkbox
       [inner, inner =~ /\A\s*<tr(\s|>)/i]
     end
   end
