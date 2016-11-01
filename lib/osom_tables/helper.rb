@@ -145,7 +145,7 @@ module OsomTables::Helper
       temp = html_string.partition(/<tr.*?>/)
 
       checkbox_tag = if row_item
-        "<td class='mark'><input type='checkbox' data-item-id='#{item.id}'/></td>\n"
+        "<td class='mark'><input type='checkbox' data-item-id='#{row_item.id}'/></td>\n"
       else
         "<th class='mark'><input type='checkbox'/></th>\n"
       end
