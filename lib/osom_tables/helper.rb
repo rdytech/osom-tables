@@ -12,9 +12,8 @@ module OsomTables::Helper
     url      = options[:url]   || request.path and options.delete(:url)
     search   = options[:search] == true and options.delete(:search)
     paginate = options[:paginate] || {} and options.delete(:paginate)
-    show_checkbox   = options[:show_checkbox] || false
+    show_checkbox = options[:show_checkbox] || false
     options.delete(:show_checkbox) if options[:show_checkbox]
-
     url = url.gsub(/(\?|&)osom_tables_cache_killa=[^&]*?/, '')
 
     # Allow the table to be loaded asynchronously
@@ -68,7 +67,7 @@ module OsomTables::Helper
     def initialize(context, items, show_checkbox=false)
       @context = context
       @items   = items
-      @show_checkbox= show_checkbox
+      @show_checkbox = show_checkbox
     end
 
     def head(&block)
@@ -97,9 +96,7 @@ module OsomTables::Helper
         head_row.gsub! m[0], "<th#{m[1]} class='#{css}' data-#{m[2]}#{m[5]}>"
       end
 
-      splited_head_row = head_row.partition(/<tr.*?>/)
-      splited_head_row.insert(2, @show_checkbox ? "<th class='mark'><input type='checkbox'/></th>\n" : '')
-      @context.content_tag :thead, splited_head_row.join.html_safe
+      @context.content_tag :thead, insert_checkbox(head_row).html_safe
     end
 
     def body(&block)
@@ -115,9 +112,7 @@ module OsomTables::Helper
             @context.content_tag(:tr){ inner }
           end
 
-          splited_row = row.partition(/<tr.*?>/)
-          splited_row.insert(2, @show_checkbox ? "<td class='mark'><input type='checkbox' data-item-id='#{item.id}'/></td>\n" : '')
-          splited_row.join
+          insert_checkbox(row, item)
         end.join("\n").html_safe
       end
     end
@@ -142,6 +137,21 @@ module OsomTables::Helper
       end
 
       [inner, inner =~ /\A\s*<tr(\s|>)/i]
+    end
+
+    def insert_checkbox(html_string, row_item=nil)
+      return html_string unless @show_checkbox
+
+      temp = html_string.partition(/<tr.*?>/)
+
+      checkbox_tag = if row_item
+        "<td class='mark'><input type='checkbox' data-item-id='#{item.id}'/></td>\n"
+      else
+        "<th class='mark'><input type='checkbox'/></th>\n"
+      end
+
+      temp.insert(2, checkbox_tag)
+      temp.join
     end
   end
 end
