@@ -80,6 +80,29 @@
     }
   }
 
+  .bottom-row {
+    text-align: right;
+
+    .pagination {
+      display: inline;
+
+      .active a {
+        background: #efd;
+        font-weight: bold;
+      }
+    }
+    .per-page {
+      float:   left;
+
+      select {
+        width:          4em;
+        height:         1.5em;
+        padding:        0;
+        vertical-align: top;
+      }
+    }
+  }
+
   &.loading, &.empty {
     table {
       thead, tbody {

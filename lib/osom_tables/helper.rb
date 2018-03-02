@@ -39,8 +39,9 @@ module OsomTables::Helper
         content_tag(:caption, caption, class: 'locker') +
         capture(Table.new(self, items, show_checkbox), &block)
       } +
-
-      osom_tables_pagination(items, url, paginate)
+      content_tag(:div, class: 'bottom-row') {
+        osom_tables_pagination(items, url, paginate)
+      }
     end
   end
 
@@ -52,7 +53,11 @@ module OsomTables::Helper
     return ''.html_safe if items.empty?
     if respond_to?(:paginate) # kaminari
       options[:params] = Rails.application.routes.recognize_path(url, method: :get).merge(options[:params] || {})
-      page_entries_info(items) + paginate(items, options)
+      
+      content_tag(:div, class: 'per-page') {
+        page_entries_info(items)
+      } + 
+      paginate(items, options)
     elsif respond_to?(:will_paginate)
       will_paginate items, options
     else
