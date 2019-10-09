@@ -1,5 +1,6 @@
-module OsomTables::Helper
+require 'osom_tables/record_tag_helper'
 
+module OsomTables::Helper
   # @param [Object] items items to be displayed, not needed if the async option is set
   # @param [Hash] options
   # @option opts [Boolean] :async Load the table content asynchronously on dom ready
