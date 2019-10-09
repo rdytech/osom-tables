@@ -5,7 +5,7 @@ class OsomTables::Railtie < Rails::Railtie
 
   initializer "osom_tables.configure_rails_initialization" do
     ActionController::Base.instance_eval do
-      before_action do
+      before_filter do
         params.delete(:osom_tables_cache_killa)
       end
     end
