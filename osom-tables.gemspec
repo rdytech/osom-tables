@@ -17,5 +17,5 @@ Gem::Specification.new do |s|
   s.executables  = `git ls-files`.split("\n").map{|f| f =~ /^bin\/(.*)/ ? $1 : nil}.compact
   s.require_path = 'lib'
 
-  spec.add_dependency 'actionview'
+  s.add_dependency 'actionview', '> 5'
 end
